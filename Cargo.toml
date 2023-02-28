@@ -1,0 +1,2 @@
+[workspace]
+members = ["00-hello-world", "01-todo-list"]

@@ -26,7 +26,7 @@ title: "Intro of WebAssembly"
 
 - How
     - wasm in Web Development
-    - wasm in CLI
+    - wasm beyond Web Development
     - wasm in Integration
     - wasm in Cloud Computing
 
@@ -56,9 +56,9 @@ title: "Intro of WebAssembly"
 
 <div class="r-stack">
     <img class="fragment fade-out" data-fragment-index="0" src="assets/js-pros-cons.png" alt="" />
-    <p class="fragment r-fit-text fade-in-then-out" data-fragment-index="0">
-        Performance ???
-    </p>
+    <div class="fragment r-fit-text fade-in-then-out" data-fragment-index="0">
+        <p>Performance ???</p>
+    </div>
     <img class="fragment" data-fragment-index="1" src="assets/js-execution.jpg" alt="" />
 </div>
 
@@ -117,13 +117,10 @@ ref: [wikipedia](https://en.wikipedia.org/wiki/WebAssembly) / [spec](https://web
 
 - Be fast, efficient, and portable
     - 以接近本地速度运行
-
 - Be readable and debuggable
     - 允许通过手工来写代码，看代码以及调试代码
-
 - Keep secure
     - 被限制运行在一个安全的沙箱执行环境中，遵循浏览器的安全策略
-
 - Don't break the web
     - 与其他网络技术和谐共处并保持向后兼容
 
@@ -131,17 +128,18 @@ ref: [wikipedia](https://en.wikipedia.org/wiki/WebAssembly) / [spec](https://web
 
 ## Key Features
 
-- two formats
+- a few value types
+    - i32 / i64 / f32 / f64 / v128
+
+- two file formats
     - binary format <small>(*.wasm)</small>
     - text format <small>(*.wat)</small>
 
+- linear memory
+
 - high performance
 
-- portable
-
-- secure
-
-- open standard
+- portable & secure
 
 --
 
@@ -201,55 +199,189 @@ Example #2
 
 --
 
+### Linear Memory
+
+> Full Memory
+>> Page (64k)
+>>
+>
+>> Page (64k)
+>>
+>
+>> Page (64k)
+
+--
+
 ### High Performance
 
-https://takahirox.github.io/WebAssembly-benchmark/
+ref: https://takahirox.github.io/WebAssembly-benchmark/
+
+<div class="r-stack">
+    <img class="fragment fade-out" data-fragment-index="0" src="assets/js-wasm-perf.png" alt="" />
+    <div class="fragment r-fit-text fade-in-then-out" data-fragment-index="0">
+        <p>较适合：大数据量的计算</p>
+        <p>不适合：跟界面 / JS 有很多交互的逻辑</p>
+    </div>
+</div>
 
 --
 
-### Portable
+### Portable & Secure
 
---
+| App1 | App2 | ... |
+| - | - | - |
+| WASM VM | 虚拟机 | ... |
+| HOST 宿主机（x86 / ARM / ...） |||
 
-### WASI
-
-> WebAssembly System Interface
+> 二进制/文本格式皆可跨平台
 
 ---
 
-## A "Hello World" app
-
---
-
-### develop WASM by ...
-
---
-
-### by Hand
-
---
-
-### by C/C++
-
---
-
-### by Rust
-
---
-
-### by Golang
+# in Web Dev
 
 ---
 
-## WASM in Web Development
+## a "Hello World"
+
+<p class="fragment fade-in">
+Q1: 选择开发语言
+</p>
+<p class="fragment fade-in">
+by Hand
+<span class="fragment">/ by C/C++</span>
+<span class="fragment">/ by <span class="fragment highlight-red">Rust</span></span> 
+</p>
+<p class="fragment fade-in">
+Q2: 开发框架
+</p>
+<p class="fragment fade-in">
+<span style="color:red">NONE</span>
+</p>
+<p class="fragment fade-in">
+<small>ref: <a href="https://rustwasm.github.io/docs/book/">https://rustwasm.github.io/docs/book/</a></small>
+</p>
 
 --
 
-### Web Browser
+### Dev Env
+
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Add support of WebAssembly
+rustup target add wasm32-unknown-unknown
+
+# Install NodeJS
+brew install node
+```
 
 --
 
-### Full Stack by Rust
+### Try It
+
+```bash
+# To project
+cd 00-hello-world
+```
+
+```bash
+# Open in VSCode
+code .
+```
+
+```bash
+# Launch Web App
+npm install
+npm run serve
+```
+
+```bash
+# View
+open http://127.0.0.1:8080
+```
+
+--
+
+### In Rust
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);        // 将外部的 alert 函数引入 Rust 环境
+}
+
+#[wasm_bindgen]
+pub fn greet(who: String) {   // 定义 greet 函数，并导出
+    alert(format!("Hello {who}!").as_str());    // 调用 alert
+}
+```
+
+--
+
+### In JavaScript
+
+#### index.js
+```javascript
+const wasm = import('./pkg');        // 引入 .pkg 下的 WebAssembly
+
+wasm
+  .then(m => m.greet('World!'))      // 调用 greet 函数
+  .catch(console.error);             // 处理 wasm 加载错误的情况
+```
+
+#### webpack.config.js
+```javascript
+new WasmPackPlugin({      // 添加对于 WebAssembly / WasmPack 的支持
+    crateDirectory: path.resolve(__dirname, ".")
+})
+```
+
+---
+
+## a "TODO List"
+
+<p class="fragment fade-in">
+>>  全栈 Rust  <<
+</p>
+
+<p class="fragment fade-in">
+ref: <a href="https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Client-side_JavaScript_frameworks/React_todo_list_beginning">clone from</a>
+</p>
+
+--
+
+### Dev Env
+
+```bash
+cargo install --locked trunk
+```
+
+--
+
+### Try It
+
+```bash
+# To project
+cd 01-todo-list
+```
+
+```bash
+# Open in VSCode
+code .
+```
+
+```bash
+# Launch Web App
+trunk serve
+```
+
+```bash
+# View
+open http://127.0.0.1:8080
+```
 
 --
 
@@ -257,7 +389,15 @@ https://takahirox.github.io/WebAssembly-benchmark/
 
 ---
 
-## WASM in CLI
+## WASM beyond Web Development
+
+--
+
+### WASI
+
+> WebAssembly System Interface
+
+- 一种将 WebAssembly 跑在任何系统上的标准化系统接口
 
 --
 
