@@ -385,65 +385,219 @@ open http://127.0.0.1:8080
 
 --
 
-### MiniProgram in WeChat
+### Yew
+
+基于纯 Rust 的前端开发框架
+
+```html
+html! {
+    <>
+        <div>
+            <h1>{ "Hello" }</h1>
+            <Greeting name={ "World" }>
+                <span>{ "on Earth" }</span>
+            </Greeting>
+            <button onclick={onclick}>{ "Click Me" }</button>
+        </div>
+        <div>
+            <Footer />
+        </div>
+    </>
+}
+```
+
+--
+
+### Component
+
+React
+```javascript
+# 类组件
+class MyComponent extends React.Component<Props> {}
+
+# 方法组件
+const MyFunc: React.FC<Props> = (props) => { ... }
+```
+
+Yew
+```rust
+#[function_component(Foo)]
+fn foo() -> Html { ... }
+```
+
+--
+
+### Hooks
+
+| | React | Yew |
+| - | - | - |
+| Basic |||
+| | useState | use_state / use_state_eq |
+| | useEffect | use_effect / use_effect_with_deps |
+| | useContext | use_context |
+| Additional |||
+| | useReducer | use_reducer / use_reducer_eq |
+| | useCallback | use_callback |
+| | useMemo | use_memo |
+| | useRef | use_node_ref / use_mut_ref |
+| | | use_force_update |
+
+--
+
+### Events
+
+```rust
+let onchange = Callback::from(move |e: Event| {
+    if let Some(element) = e.target_dyn_into::<HtmlInputElement>() {
+        web_sys::console::log_1(&element.value());
+    }
+});
+
+let onclick = Callback::from(move |e: MouseEvent| {
+    e.prevent_default();
+});
+
+html! {
+    <>
+        <input {onchange} />
+        <button {onclick}>{ "Click Me" }</button>
+    </>
+}
+```
 
 ---
 
-## WASM beyond Web Development
+## WASM in WeChat
+### MiniProgram
+
+--
+
+### WXWebAssembly
+
+- WXWebAssembly 类似于 Web 标准 WebAssembly，能够在一定程度上提高小程序的性能。
+
+- 从基础库 v2.13.0 开始，小程序可以在全局访问并使用 WXWebAssembly 对象。
+
+- 从基础库 v2.15.0 开始，小程序支持在 Worker 内使用 WXWebAssembly。
+
+- 小程序插件从基础库 v2.18.1 开始支持 WXWebAssembly。
+
+- 从微信 8.0.25 开始支持 SIMD 特性。
+
+---
+
+# beyond
+# Web Dev
+
+---
+
+## Embedding Interfaces
+
+> ref: https://webassembly.org/specs/
+
+- JavaScript API{.fragment}
+    - 访问 JavaScript 相关数据结构和对象
+    - 与 JavaScript 相关上下文进行交互
+
+- Web API{.fragment}
+    - 扩展 JavaScript 以提供与浏览器交互的能力
+
+- WASI API{.fragment}
+    - 提供了在 Web 之外访问标准化系统接口的能力
+    - 包括文件、网络、时钟、随机数等
 
 --
 
 ### WASI
 
-> WebAssembly System Interface
+WebAssembly System Interface
 
-- 一种将 WebAssembly 跑在任何系统上的标准化系统接口
+>>> WASM App
+>>
+>> WASI Runtime
+>
+> Host OS{.fragment}
 
 --
 
 ### Wasmtime
 
+Install
+```bash
+curl https://wasmtime.dev/install.sh -sSf | bash
+```
+
+Coding
+```rust
+// hello.rs
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+Build
+```bash
+rustup target add wasm32-wasi
+rustc hello.rs --target wasm32-wasi
+```
+
+Run
+```bash
+wasmtime hello.wasm
+Hello, world!
+```
+
 --
 
 ### Wasmer
 
----
+Install
+```bash
+curl https://get.wasmer.io -sSfL | sh
+```
 
-## WASM in Integration
-
---
-
-### in Rust
-
---
-
-### in Java
+Run
+```bash
+wasmer hello.wasm
+```
 
 --
 
-### in Golang
+### Embed WASM into ...
 
----
+<br/>
 
-## WASM in Cloud Computing
+>>> WASM Module
+>>
+>> WASM Runtime
+>
+> Java / Golang / ...{.fragment}
 
---
+<br/>
 
-### in Docker
-
---
-
-### in Kubernetes
-
---
-
-### in Service Mesh
+<p class="fragment">
+eg: <a href="https://github.com/wasmerio/wasmer-java">wasmer-java</a>, <a href="https://github.com/wasmerio/wasmer-go">wasmer-go</a>, <a href="https://github.com/wasmerio/wasmer-python">wasmer-python</a>
+</p>
 
 ---
 
-## Thanks
+# in Cloud Computing
 
+---
 
+## in Docker
 
+--
 
+## in Kubernetes
+
+--
+
+## in Service Mesh
+
+---
+
+# Thanks
+
+> 除了 AI，也要学 Rust 了么？
 
