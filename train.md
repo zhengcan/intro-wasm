@@ -566,6 +566,19 @@ wasmer hello.wasm
 eg: <a href="https://github.com/wasmerio/wasmer-java">wasmer-java</a>, <a href="https://github.com/wasmerio/wasmer-go">wasmer-go</a>, <a href="https://github.com/wasmerio/wasmer-python">wasmer-python</a>, <a href="https://github.com/dart-lang/wasm">dart/flutter</a>
 </p>
 
+--
+
+### Cool Things in WASM
+
+- FFMpeg
+    - https://github.com/ffmpegwasm/ffmpeg.wasm
+- Skia
+    - https://skia.org/docs/user/modules/canvaskit/
+- TensorFlow
+    - https://www.tensorflow.org/js/guide/platform_environment?hl=zh-cn#wasm_%E5%90%8E%E7%AB%AF
+- Linux / Windows
+    - https://bellard.org/jslinux/
+
 ---
 
 # in Cloud Computing
