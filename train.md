@@ -15,20 +15,13 @@ title: "Intro of WebAssembly"
 
 ---
 
-## Table of Content
+## Agenda
 
-- What
-    - What's wasm
-
-- Why
-    - Why we use wasm
-    - Why we use wasi
-
-- How
-    - wasm in Web Development
-    - wasm beyond Web Development
-    - wasm in Integration
-    - wasm in Cloud Computing
+- What & Why
+- At a glance
+- in Web Dev
+- beyond Web Dev
+- in Cloud Computing
 
 ---
 
@@ -431,16 +424,16 @@ fn foo() -> Html { ... }
 
 | | React | Yew |
 | - | - | - |
-| Basic |||
+| |||
 | | useState | use_state / use_state_eq |
 | | useEffect | use_effect / use_effect_with_deps |
 | | useContext | use_context |
-| Additional |||
+| |||
 | | useReducer | use_reducer / use_reducer_eq |
 | | useCallback | use_callback |
 | | useMemo | use_memo |
-| | useRef | use_node_ref / use_mut_ref |
-| | | use_force_update |
+| | useRef | use_mut_ref / use_node_ref |
+| | - | use_force_update |
 
 --
 
@@ -493,8 +486,6 @@ html! {
 
 ## Embedding Interfaces
 
-> ref: https://webassembly.org/specs/
-
 - JavaScript API{.fragment}
     - 访问 JavaScript 相关数据结构和对象
     - 与 JavaScript 相关上下文进行交互
@@ -504,13 +495,13 @@ html! {
 
 - WASI API{.fragment}
     - 提供了在 Web 之外访问标准化系统接口的能力
-    - 包括文件、网络、时钟、随机数等
+    - 包括文件、网络、时钟、随机数、加密、神经网络等
 
 --
 
 ### WASI
 
-WebAssembly System Interface
+> WebAssembly System Interface
 
 >>> WASM App
 >>
@@ -565,18 +556,14 @@ wasmer hello.wasm
 
 ### Embed WASM into ...
 
-<br/>
-
 >>> WASM Module
 >>
 >> WASM Runtime
 >
 > Java / Golang / ...{.fragment}
 
-<br/>
-
 <p class="fragment">
-eg: <a href="https://github.com/wasmerio/wasmer-java">wasmer-java</a>, <a href="https://github.com/wasmerio/wasmer-go">wasmer-go</a>, <a href="https://github.com/wasmerio/wasmer-python">wasmer-python</a>
+eg: <a href="https://github.com/wasmerio/wasmer-java">wasmer-java</a>, <a href="https://github.com/wasmerio/wasmer-go">wasmer-go</a>, <a href="https://github.com/wasmerio/wasmer-python">wasmer-python</a>, <a href="https://github.com/dart-lang/wasm">dart/flutter</a>
 </p>
 
 ---
@@ -587,13 +574,119 @@ eg: <a href="https://github.com/wasmerio/wasmer-java">wasmer-java</a>, <a href="
 
 ## in Docker
 
+<img src="assets/twitter-docker-wasm.png" alt="" style="width: 60%" />{.fragment}
+
 --
+
+### Stack
+
+<div class="fragment" style="background: #222; padding: 1% 2%">
+    <div class="fragment" style="background: #333; padding: 1% 2%">
+        <div style="background: #444; padding: 1% 2%">
+            <div class="r-stack">
+                <div class="fragment" style="background: #555; padding: 1% 2%; width: 90%; height: 100%">
+                    <div class="fragment" style="background: #666; padding: 1% 2%;">
+                        <div style="background: #777; padding: 1% 2%">
+                            <p>WASM App</p>
+                        </div>
+                        <p>WASM Runtime</p>
+                    </div>
+                    <p>Guest OS</p>
+                </div>
+                <div class="fragment" style="background: #555; padding: 1% 2%; width: 90%; height: 100%">
+                    <div style="background: #555; padding: 1% 2%;">
+                        <div style="background: #666; padding: 1% 2%">
+                            <p>WASM App</p>
+                        </div>
+                        <p>WASM Runtime</p>
+                    </div>
+                    <p></p>
+                </div>
+            </div>
+            <p>Containerd</p>
+        </div>
+        <p>Docker Engine</p>
+    </div>
+    <p>HOST OS</p>
+</div>
+
+--
+
+### Docker+Wasm (Beta)
+
+<img src="assets/docker-containerd-wasm-diagram.webp" alt="" style="width: 60%; background: white" />{.fragment}
+
+ref: https://docs.docker.com/desktop/wasm/ {.fragment}
+
+---
 
 ## in Kubernetes
 
+<img src="assets/difference-between.png" alt="" />{.fragment}
+
 --
 
-## in Service Mesh
+### K8s Cluster
+
+<img src="assets/kubernetes-cluster.png" alt="" />{.fragment}
+
+--
+
+### Krustlet
+
+ref: https://krustlet.dev/
+
+<ul class="fragment">
+    <li>一个 kubelet 实现</li>
+    <li>提供原生支持 WebAssembly 运行能力</li>
+    <li>基本不再维护 :)</li>
+</ul>
+
+--
+
+### runwasi
+
+ref: https://github.com/containerd/runwasi
+
+<img src="assets/runwasi_logo_icon.svg" alt="" style="width: 40%; background: white" />
+
+<ul class="fragment">
+    <li>为 <a href="https://containerd.io/">containerd</a> 提供除 Linux Container 之外的第二种容器类型：<strong>Wasm Container</strong></li>
+    <li>以 <a href="javascript:;" class="navigate-next">WasmEdge</a> / Wasmtime 为底层 WebAssembly 运行时</li>
+</ul>
+
+--
+
+### WasmEdge
+
+ref: https://wasmedge.org/
+
+<ul class="fragment">
+    <li>一个云原生 WebAssembly 运行时</li>
+    <li>通过 <a href="https://github.com/containers/crun">crun</a> 为 Kubernetes 提供底层运行 WebAssembly 的能力</li>
+    <li>
+        其他特性
+        <ul>
+            <li>支持命令行调用</li>
+            <li>内嵌 JS 执行引擎</li>
+            <li>支持嵌入多种其他语言</li>
+            <li>……</li>
+        </ul>
+    </li>
+</ul>
+
+--
+
+### in Public Cloud
+
+- Node Pool
+    - [在 Azure 上创建 WASI 节点池以运行 WASM 负载（预览）](https://learn.microsoft.com/en-us/azure/aks/use-wasi-node-pools)
+- Serverless
+    - [在腾讯云上部署基于 WebAssembly 的高性能 serverless 函数](https://my.oschina.net/u/4532842/blog/5172639)
+- Service Mesh
+    - [使用ORAS简化基于WASM的服务网格扩展功能](https://help.aliyun.com/document_detail/205485.html)
+- eBPF
+    - [使用 WebAssembly 编写、分发、加载运行 eBPF 程序](https://developer.aliyun.com/article/1050439)
 
 ---
 
